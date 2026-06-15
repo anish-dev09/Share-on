@@ -152,7 +152,7 @@ export default function PageBody() {
   const [sandboxType, setSandboxType] = useState("LinkedIn Post");
   const [sandboxReady, setSandboxReady] = useState(false);
 
-  const prices = [0, yearly ? 29 : 79, yearly ? 39 : 99];
+  const prices = [0, yearly ? 15 : 19, yearly ? 31 : 39];
   const activeArchitecture = architecture[activeNode];
   const ActiveArchitectureIcon = activeArchitecture.icon;
   const submitSandbox = (event: FormEvent) => { event.preventDefault(); setSandboxReady(false); window.setTimeout(() => setSandboxReady(true), 900); };
