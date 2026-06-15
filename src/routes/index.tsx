@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const navItems = ["Features", "Solutions", "Pricing", "Resources", "About"];
+const navItems = ["Features", "Solutions", "Pricing", "About"];
 const rotatingWords = ["authority", "influence", "opportunity", "momentum"];
 
 function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
