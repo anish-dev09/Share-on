@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  Activity, ArrowRight, BarChart3, Check, CirclePlay, Command, Globe2, Infinity as InfinityIcon,
+  Activity, ArrowRight, BarChart3, Check, CirclePlay, Command, Globe2,
   Menu, Sparkles, ChevronRight,
 } from "lucide-react";
 import { useEffect, useState, type MouseEvent, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { LazyBody } from "@/components/lazy-body";
 import { LazyCosmicScene } from "@/components/lazy-cosmic-scene";
+import logoUrl from "@/assets/ShareOn Logo Primary.jpg.jpeg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -78,7 +79,7 @@ function Index() {
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
 
       <header className="fixed inset-x-0 top-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-6xl items-center justify-between rounded-full border border-border bg-background/65 px-3 py-2 shadow-[var(--shadow-ambient)] backdrop-blur-2xl md:top-6 md:px-4">
-        <a href="#top" className="flex items-center gap-2 px-2 font-bold tracking-tight"><span className="flex size-8 items-center justify-center rounded-xl bg-primary shadow-[var(--shadow-primary)]"><InfinityIcon className="size-5" /></span>ShareOn</a>
+        <a href="#top" className="flex items-center gap-2 px-2 font-bold tracking-tight"><img src={logoUrl} alt="ShareOn Logo" className="h-8 w-8 rounded-xl object-cover" />ShareOn</a>
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Main navigation">{navItems.map((item) => <a key={item} href={item === "Resources" ? "#sandbox" : `#${item.toLowerCase()}`} className="rounded-full px-3 py-2 text-sm text-muted-foreground transition hover:bg-accent hover:text-foreground">{item}</a>)}</nav>
         <div className="flex items-center gap-2"><Button variant="ghost" size="sm" className="hidden md:inline-flex" onClick={() => setPaletteOpen(true)}><Command /></Button><Button variant="hero" size="sm">Start free <ArrowRight /></Button><Button variant="hero" size="sm" asChild><a href="#waitlist" onClick={(e) => { e.preventDefault(); document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" }); }}>Join waitlist</a></Button><Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu"><Menu /></Button></div>
       </header>
