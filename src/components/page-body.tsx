@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Activity, ArrowRight, Atom, BarChart3, BookOpen, Boxes, BrainCircuit, CalendarDays,
@@ -46,6 +47,31 @@ const architecture = [
 ];
 
 function WaitlistForm() {
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    const myForm = event.currentTarget;
+    const formData = new FormData(myForm);
+    const urlEncodedData = new URLSearchParams(formData as any).toString();
+
+    try {
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: urlEncodedData,
+      });
+      navigate({ to: "/thank-you" });
+    } catch (error) {
+      console.error("Form submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <form
       name="shareon-waitlist"
@@ -53,6 +79,7 @@ function WaitlistForm() {
       action="/thank-you"
       data-netlify="true"
       data-netlify-honeypot="bot-field"
+      onSubmit={handleSubmit}
       className="space-y-6"
     >
       <input type="hidden" name="form-name" value="shareon-waitlist" />
@@ -178,8 +205,8 @@ function WaitlistForm() {
         </div>
       </div>
 
-      <Button type="submit" variant="hero" size="lg" className="w-full">
-        Join the waitlist <ArrowRight />
+      <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isSubmitting}>
+        {isSubmitting ? "Joining..." : "Join the waitlist"} <ArrowRight />
       </Button>
       <p className="text-center text-xs text-muted-foreground">No spam. Unsubscribe anytime.</p>
     </form>
