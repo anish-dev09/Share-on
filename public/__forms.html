@@ -1,0 +1,75 @@
+<!--
+  Netlify Forms — Static Detection Blueprint
+  ============================================
+  This hidden HTML page exists solely for Netlify's build-time form detection.
+  Netlify scans static HTML files during deployment to register form endpoints.
+  Since the actual form is rendered at runtime by TanStack Start (SSR),
+  Netlify cannot detect it from the dynamic output. This file provides the
+  blueprint so Netlify knows the form exists and which fields to expect.
+
+  IMPORTANT: The field names here MUST match the names in the live React form
+  in src/components/page-body.tsx. If you add/remove/rename a field there,
+  update this file too.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Netlify Form Detection</title>
+</head>
+<body>
+  <form
+    name="shareon-waitlist"
+    netlify
+    netlify-honeypot="bot-field"
+    hidden
+  >
+    <input name="bot-field" />
+    <input name="form-name" value="shareon-waitlist" />
+    <input name="fullname" />
+    <input name="email" type="email" />
+    <select name="role">
+      <option value="startup_founder">Startup Founder</option>
+      <option value="consultant">Consultant</option>
+      <option value="coach_trainer">Coach / Trainer</option>
+      <option value="educator_course_creator">Educator / Course Creator</option>
+      <option value="freelancer">Freelancer</option>
+      <option value="agency_owner">Agency Owner</option>
+      <option value="real_estate_agent">Real Estate Agent</option>
+      <option value="marketing_professional">Marketing Professional</option>
+      <option value="other">Other</option>
+    </select>
+    <select name="primary_platform">
+      <option value="linkedin">LinkedIn</option>
+      <option value="instagram">Instagram</option>
+      <option value="youtube">YouTube</option>
+      <option value="twitter_x">Twitter / X</option>
+      <option value="multiple_platforms">Multiple platforms</option>
+      <option value="not_actively_posting">Not actively posting yet</option>
+    </select>
+    <select name="content_challenge">
+      <option value="no_camera">I don't like being on camera</option>
+      <option value="no_time">I don't have time to create content</option>
+      <option value="no_ideas">I run out of content ideas</option>
+      <option value="no_growth_strategy">I don't know how to grow my audience</option>
+      <option value="lack_consistency">I lack consistency in posting</option>
+      <option value="no_skills">I don't have editing / design skills</option>
+    </select>
+    <select name="posting_frequency">
+      <option value="daily">Daily</option>
+      <option value="few_times_week">A few times in a week</option>
+      <option value="once_a_week">Once a week</option>
+      <option value="rarely">Rarely</option>
+      <option value="never">Never</option>
+    </select>
+    <select name="country">
+      <option value="india">India</option>
+      <option value="united_states">United States</option>
+      <option value="united_kingdom">United Kingdom</option>
+      <option value="uae_gcc">UAE / GCC</option>
+      <option value="japan">Japan</option>
+      <option value="other">Other</option>
+    </select>
+  </form>
+</body>
+</html>

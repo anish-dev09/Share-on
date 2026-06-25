@@ -3,24 +3,15 @@ import {
   Activity, ArrowRight, Atom, BarChart3, BookOpen, Boxes, BrainCircuit, CalendarDays,
   Check, ChevronRight, CirclePlay, Command, Database, FileText, Globe2, Infinity as InfinityIcon,
   Layers3, Menu, MessageCircle, Mic2, Network, Play, Search, Send, Sparkles, UploadCloud,
-  Video, WandSparkles, X, Zap, Loader2, CheckCircle2,
+  Video, WandSparkles, X, Zap,
 } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import creatorsImage from "@/assets/shareon-creators.jpg";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { LazyCosmicScene } from "@/components/lazy-cosmic-scene";
+
 
 const navItems = ["Features", "Solutions", "Pricing", "Resources", "About"];
 
@@ -54,88 +45,141 @@ const architecture = [
   { name: "Analytics Layer", detail: "Closes the loop with performance-aware recommendations.", metric: "+42%", icon: BarChart3 },
 ];
 
-const roleOptions = ["Startup Founder", "Consultant", "Coach / Trainer", "Educator / Course Creator", "Freelancer", "Agency Owner", "Real Estate Agent", "Marketing Professional", "Other"] as const;
-const platformOptions = ["LinkedIn", "Instagram", "YouTube", "Twitter / X", "Multiple platforms", "Not actively posting yet"] as const;
-const challengeOptions = ["I don't like being on camera", "I don't have time to create content", "I run out of content ideas", "I don't know how to grow my audience", "I lack consistency in posting", "I don't have editing/design skills"] as const;
-const frequencyOptions = ["Daily", "A few times a week", "Once a week", "Rarely", "Never"] as const;
-const countryOptions = ["India", "United States", "United Kingdom", "UAE / GCC", "Japan", "Other"] as const;
-
-const waitlistSchema = z.object({
-  fullName: z.string().min(1, "Full name is required"),
-  email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
-  role: z.string().min(1, "Please select an option"),
-  platform: z.string().min(1, "Please select an option"),
-  challenge: z.string().min(1, "Please select an option"),
-  frequency: z.string().optional(),
-  country: z.string().min(1, "Please select your country"),
-  otherCountry: z.string().optional(),
-}).refine((data) => data.country !== "Other" || (data.otherCountry ?? "").length > 0, {
-  message: "Please specify your country",
-  path: ["otherCountry"],
-});
-
-type WaitlistValues = z.infer<typeof waitlistSchema>;
-
 function WaitlistForm() {
-  const [submitted, setSubmitted] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    watch,
-    setValue,
-    reset,
-  } = useForm<WaitlistValues>({
-    resolver: zodResolver(waitlistSchema),
-    defaultValues: { fullName: "", email: "", role: "", platform: "", challenge: "", frequency: "", country: "", otherCountry: "" },
-  });
-
-  const country = watch("country");
-  const onSubmit = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setSubmitted(true);
-    reset();
-  };
-
-  if (submitted) {
-    return (
-      <AnimatePresence mode="wait">
-        <motion.div
-          key="success"
-          initial={{ opacity: 0, scale: .95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center justify-center py-20 text-center"
-        >
-          <motion.span
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 14 }}
-            className="mb-8 flex size-20 items-center justify-center rounded-full bg-primary/15"
-          >
-            <CheckCircle2 className="size-10 text-primary" />
-          </motion.span>
-          <h3 className="text-3xl font-bold tracking-tight">You&rsquo;re on the list!</h3>
-          <p className="mt-4 max-w-md text-muted-foreground">
-            Keep an eye on your inbox for exclusive early access. We&rsquo;ll let you know the moment we launch.
-          </p>
-        </motion.div>
-      </AnimatePresence>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
+    <form
+      name="shareon-waitlist"
+      method="POST"
+      action="/thank-you"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      className="space-y-6"
+    >
+      <input type="hidden" name="form-name" value="shareon-waitlist" />
+      <p hidden>
+        <label>
+          Don't fill this out: <input name="bot-field" />
+        </label>
+      </p>
+
       <div className="grid gap-5 md:grid-cols-2">
-        <div className="space-y-2"><Label htmlFor="fullName">Full Name *</Label><Input id="fullName" {...register("fullName")} placeholder="Your full name" />{errors.fullName && <p className="text-xs text-destructive">{errors.fullName.message}</p>}</div>
-        <div className="space-y-2"><Label htmlFor="email">Email Address *</Label><Input id="email" type="email" {...register("email")} placeholder="you@example.com" />{errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}</div>
-        <div className="space-y-2"><Label>What best describes you? *</Label><Select onValueChange={(v) => setValue("role", v)}><SelectTrigger><SelectValue placeholder="Select an option" /></SelectTrigger><SelectContent>{roleOptions.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select>{errors.role && <p className="text-xs text-destructive">{errors.role.message}</p>}</div>
-        <div className="space-y-2"><Label>Which platform do you focus on most? *</Label><Select onValueChange={(v) => setValue("platform", v)}><SelectTrigger><SelectValue placeholder="Select an option" /></SelectTrigger><SelectContent>{platformOptions.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select>{errors.platform && <p className="text-xs text-destructive">{errors.platform.message}</p>}</div>
-        <div className="space-y-2"><Label>What&rsquo;s your biggest content challenge right now? *</Label><Select onValueChange={(v) => setValue("challenge", v)}><SelectTrigger><SelectValue placeholder="Select an option" /></SelectTrigger><SelectContent>{challengeOptions.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select>{errors.challenge && <p className="text-xs text-destructive">{errors.challenge.message}</p>}</div>
-        <div className="space-y-2"><Label>How often do you currently post content?</Label><Select onValueChange={(v) => setValue("frequency", v)}><SelectTrigger><SelectValue placeholder="Select an option" /></SelectTrigger><SelectContent>{frequencyOptions.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
-        <div className="space-y-2 md:col-span-2"><Label>Country *</Label><div className="grid gap-4 md:grid-cols-2"><Select onValueChange={(v) => { setValue("country", v); if (v !== "Other") setValue("otherCountry", ""); }}><SelectTrigger><SelectValue placeholder="Select your country" /></SelectTrigger><SelectContent>{countryOptions.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select><AnimatePresence>{country === "Other" && (<motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: .25 }}><Input placeholder="Please specify your country" {...register("otherCountry")} /></motion.div>)}</AnimatePresence></div>{errors.country && <p className="text-xs text-destructive">{errors.country.message}</p>}{errors.otherCountry && <p className="text-xs text-destructive">{errors.otherCountry.message}</p>}</div>
+        {/* Full Name */}
+        <div className="space-y-2">
+          <Label htmlFor="fullname">Full Name *</Label>
+          <Input id="fullname" name="fullname" required placeholder="Your full name" />
+        </div>
+
+        {/* Email */}
+        <div className="space-y-2">
+          <Label htmlFor="email">Email Address *</Label>
+          <Input id="email" name="email" type="email" required placeholder="you@example.com" />
+        </div>
+
+        {/* Role */}
+        <div className="space-y-2">
+          <Label htmlFor="role">What best describes you? *</Label>
+          <select
+            id="role"
+            name="role"
+            required
+            defaultValue=""
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23999%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[right_0.75rem_center] bg-no-repeat pr-8"
+          >
+            <option value="" disabled>Select an option</option>
+            <option value="startup_founder">Startup Founder</option>
+            <option value="consultant">Consultant</option>
+            <option value="coach_trainer">Coach / Trainer</option>
+            <option value="educator_course_creator">Educator / Course Creator</option>
+            <option value="freelancer">Freelancer</option>
+            <option value="agency_owner">Agency Owner</option>
+            <option value="real_estate_agent">Real Estate Agent</option>
+            <option value="marketing_professional">Marketing Professional</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        {/* Primary Platform */}
+        <div className="space-y-2">
+          <Label htmlFor="primary_platform">Which platform do you focus on most? *</Label>
+          <select
+            id="primary_platform"
+            name="primary_platform"
+            required
+            defaultValue=""
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23999%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[right_0.75rem_center] bg-no-repeat pr-8"
+          >
+            <option value="" disabled>Select an option</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="instagram">Instagram</option>
+            <option value="youtube">YouTube</option>
+            <option value="twitter_x">Twitter / X</option>
+            <option value="multiple_platforms">Multiple platforms</option>
+            <option value="not_actively_posting">Not actively posting yet</option>
+          </select>
+        </div>
+
+        {/* Content Challenge */}
+        <div className="space-y-2">
+          <Label htmlFor="content_challenge">What&rsquo;s your biggest content challenge right now? *</Label>
+          <select
+            id="content_challenge"
+            name="content_challenge"
+            required
+            defaultValue=""
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23999%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[right_0.75rem_center] bg-no-repeat pr-8"
+          >
+            <option value="" disabled>Select an option</option>
+            <option value="no_camera">I don't like being on camera</option>
+            <option value="no_time">I don't have time to create content</option>
+            <option value="no_ideas">I run out of content ideas</option>
+            <option value="no_growth_strategy">I don't know how to grow my audience</option>
+            <option value="lack_consistency">I lack consistency in posting</option>
+            <option value="no_skills">I don't have editing / design skills</option>
+          </select>
+        </div>
+
+        {/* Posting Frequency */}
+        <div className="space-y-2">
+          <Label htmlFor="posting_frequency">How often do you currently post content? *</Label>
+          <select
+            id="posting_frequency"
+            name="posting_frequency"
+            required
+            defaultValue=""
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23999%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[right_0.75rem_center] bg-no-repeat pr-8"
+          >
+            <option value="" disabled>Select an option</option>
+            <option value="daily">Daily</option>
+            <option value="few_times_week">A few times in a week</option>
+            <option value="once_a_week">Once a week</option>
+            <option value="rarely">Rarely</option>
+            <option value="never">Never</option>
+          </select>
+        </div>
+
+        {/* Country */}
+        <div className="space-y-2 md:col-span-2">
+          <Label htmlFor="country">Country *</Label>
+          <select
+            id="country"
+            name="country"
+            required
+            defaultValue=""
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23999%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[right_0.75rem_center] bg-no-repeat pr-8"
+          >
+            <option value="" disabled>Select your country</option>
+            <option value="india">India</option>
+            <option value="united_states">United States</option>
+            <option value="united_kingdom">United Kingdom</option>
+            <option value="uae_gcc">UAE / GCC</option>
+            <option value="japan">Japan</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
       </div>
-      <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? <><Loader2 className="size-5 animate-spin" /> Joining the waitlist&hellip;</> : <>Join the waitlist <ArrowRight /></>}
+
+      <Button type="submit" variant="hero" size="lg" className="w-full">
+        Join the waitlist <ArrowRight />
       </Button>
       <p className="text-center text-xs text-muted-foreground">No spam. Unsubscribe anytime.</p>
     </form>
