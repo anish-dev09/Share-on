@@ -59,7 +59,7 @@ function WaitlistForm() {
     const urlEncodedData = new URLSearchParams(formData as any).toString();
 
     try {
-      await fetch("/", {
+      await fetch("/__forms.html", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: urlEncodedData,
